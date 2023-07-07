@@ -30,7 +30,7 @@ http://192.168.1.101:31340/
 
 Deployment
 파드가 여러개 있군
-
+```bash
 #kubectl run ( 파드 배포 )
 #kubectl create ( 파드,디플로이 배포 )
 #kubectl apply ( 파드,디플로이 배포 --- 파일을 통한 배포 )
