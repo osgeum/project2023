@@ -165,14 +165,109 @@ spec:
 
 		
 init container        
+메인 컨테이너를 실행하는데 필요한 초기화 구성
+init container를 가지고 있는 pod는 init container가 정상 작동해야 main container가 구동이됨.
+앱 컨테이너 실행 전에 미리 동작시킬 컨테이너
+본 Container가 실행되기 전에 사전 작업이 필요할 경우 사용
+초기화 컨테이너가 모두 실행된 후에 앱컨테이널를 실행
 
 infra container(pause) 이해하기
+pod 생성될떄 생성, 삭제될때 삭제됨.
+pod의 인프라(IP 관리, 호스트네임 관리)
 
 static pod 만들기
+api에게 요청을 보내지 않음.
+static pod의 경로에 yaml 파일을 생성해 놓으면, kubelet 데몬에 의해서 pod 생성, yaml 파일 삭제시 pod 삭제
+
+cat /var/lib/kubelet/config.yaml 에서 staticPodPath 확인하는
+
+/etc/kubernetes/manifests
+
+/var/lib/kubelet/config.yaml 수정후 kubelet 데몬 재시작, 변경된 컨피크 적용.
+
+control-plane 서버의 /etc/kubernetes/manifests 경로에 etcd , api , control , scheduler yaml 파일 존재, nginx yaml 생성시 control-plane이 아니 node에 생성이 됨.
 
 Pod에 resource 할당 하기
+Resource request - 파드를 실행하기 위한 최소 리소스 양을 요청
+Resource limits - 파드가 사용할 수 있는 최대 리소스 양을 제한
+                  Memory limit를 초과해서 사용되는 파드는 종료, 다시 스케줄링 된다.
+				  
+limits 만 설정시 request도 동일하게 설정됨.
+request 만 설정시 request만 설정됨.
 
+컨테이너별로 설정
+
+		  
 환경변수를 이용해 컨테이너에 데이터 전달하기
 
 Pod 구성 패턴의 종류
+
+pod를 구성하고 실행하는 패턴의
+
+Sidecar
+혼자서는 동작할수 없는 파드, 컨테이너 2가지가 함께 동작해야 구현 할수 있는것.
+
+Adapter
+외부의 데이터를 Adapter 컨테이너가 전달 받아, 전달 받은 데이터를 웹ui를 제공해주는 pod에게 전달.
+중간에 거쳐가는 Adapter
+
+Ambassador
+웹서버에서 생성된 정보를 ambassaror 컨테이너를 통하여 외부로 분배하는 형태
+
+문제
+
+Pod 운영 실습
+
+Create a static pod on node01 called mydb with image redis
+Create this pod on node01 and make sure that it is recreated/restarted automatically in case of a failure.
+- USE /etc/kubernetes/manifests
+- Kubelet Configured for Static Pods
+- Pod mydb-node01 is up and running
+
+node1의 /etc/kubernetes/manifests 경로에 
+mydb.yaml 파일 생성
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: mydb
+  name: mydb
+spec:
+  containers:
+  - image: redis
+    name: mydb
+	
+다음과 같은 조건에 맞는 Pod를 생성하시오.
+- Pod name: myweb, image:nginx:1.14
+- CPU 200m,Meroy 500Mi 를 요구 하고, CPU 1core,Memory 1Gi 제한 받는다.
+- Application 동작에 필요한 환경변수 DB=mydb를 포함 한다.
+- namespace product 에서 동작되어야 한다.
+# kubectl create namespace product
+
+myweb.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myweb
+  namespace: product
+spec:
+  containers:
+  - name: myweb-container
+    image: nginx:1.14
+    ports:
+    - containerPort: 80
+      protocol: TCP
+    resources:
+      requests:
+        memory: "500Mi"
+        cpu: "200m"
+      limits:
+        memory: "1Gi"
+        cpu: "1"
+    env:
+    - name: DB
+      value: "mydb"
+	  
+# kubectl config set-context --current --namespace=product --user=kubernetes-admin
 
