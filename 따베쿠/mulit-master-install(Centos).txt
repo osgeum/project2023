@@ -1,0 +1,111 @@
+Centos 7.9
+
+도커 설치
+yum install -y yum-utils
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo -y
+yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y 
+systemctl start docker
+systemctl enable docker
+docker version
+
+# Disable firewall
+systemctl stop firewalld 
+systemctl disable firewalld
+
+# Swap disabled. You MUST disable 
+swapoff -a && sed -i '/swap/s/^/#/' /etc/fstab
+
+
+2. Letting iptables see bridged traffic 
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+br_netfilter
+EOF
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sudo sysctl --system
+
+kubelet kubeadm kubectl 설치
+cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+exclude=kubelet kubeadm kubectl
+EOF
+
+# Set SELinux in permissive mode (effectively disabling it)
+sudo setenforce 0
+sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+sudo systemctl enable --now kubelet
+
+---------------------------------------------------------------------------------------------------	
+LB설정
+mkdir /etc/nginx
+cat << END > /etc/nginx/nginx.conf
+events {}
+stream {
+     upstream stream_backend {
+           least_conn;
+           server 192.168.238.101:6443;
+           server 192.168.238.102:6443;
+           server 192.168.238.103:6443;
+      }
+
+      server {
+           listen          6443;
+           proxy_pass   stream_backend;
+           proxy_timeout 300s;
+           proxy_connect_timeout 1s;
+      }
+}
+END
+
+docker run --name proxy -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro --restart=always -p 6443:6443 -d nginx
+
+curl 192.168.238.254:6443
+
+마스터 노드 조인
+쿠버네티스 모든 마스터, 워크 실행
+----------------------------------------------
+cd /etc/containerd/
+sudo rm config.toml
+sudo systemctl restart containerd
+
+-----------------------------------------------
+
+마스터1에서 실행
+kubeadm init --control-plane-endpoint "lb.example.com:6443" --upload-certs
+
+mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+마스터 조인 실행
+kubeadm join lb.example.com:6443 --token rss6cj.spgsbsrzi8shak2s \
+        --discovery-token-ca-cert-hash sha256:e84b95f71d43169ada24c09b5d5327fdd61e9f42446eea1ef25ee0c9bb6c727e \
+        --control-plane --certificate-key fa7a9dc28bb1074fc2cd629455fefe9ee80c2ca4f365bc635f8531e6a202ff9c
+노드 조인 실행
+kubeadm join lb.example.com:6443 --token rss6cj.spgsbsrzi8shak2s \
+        --discovery-token-ca-cert-hash sha256:e84b95f71d43169ada24c09b5d5327fdd61e9f42446eea1ef25ee0c9bb6c727e
+
+cni - calico 설치 (master1에서만 실행)
+sudo curl -o calico.yaml https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calico.yaml
+kubectl apply -f calico.yaml
+
+--worker node에서도 kubectl 을 실행하기 위해서
+  mkdir -p $HOME/.kube
+  scp master1:/etc/kubernetes/admin.conf $HOME/.kube/config
+  chown $(id -u):$(id -g) $HOME/.kube/config
+
+명령어 tab 활성화
+yum -y install bash-completion
+source <(kubectl completion bash)
+echo "source <(kubectl completion bash)" >> ~/.bashrc
+source <(kubeadm completion bash)
+echo "source <(kubeadm completion bash)" >> ~/.bashrc
