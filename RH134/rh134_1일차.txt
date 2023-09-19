@@ -1,0 +1,297 @@
+https://whitestudy.tistory.com/83
+
+admin2
+
+10:00 - 18:00
+
+11:30 - 12:30 점심시작
+
+식권
+
+https://rol.redhat.com.
+actozsoft
+
+수업종료후 45일 까지 사용 가능
+
+랙1
+3대 사용
+servera
+serverb
+workstation
+
+https://meet.google.com/ubt-caxx-ajg
+
+https://github.com/studylabdoc//text/tree/main/REDHAT/RH134
+
+rh1234 부터 사용되는 명령어
+
+머신에서 사용되는 계정
+student / student
+root / redhat
+
+ssh root@servera
+ssh root@serverb
+
+# man
+모든 프로그램
+제품 - 설명서
+기능키 : 피루적인 몇 가지
+q : 빠져나가기
+h : 전체 키확인
+enter : 라인별로 출력
+space bar : 페이지별로 출력
+b: 위로 이동
+/ : 검색 ex /-l
+n: next
+N: undo next
+
+LS(1)
+LS: 명령어
+(1) 섹션 변호
+
+
+       1   Executable programs or shell commands : 사용자가 사용 가능한 명령어                 
+       2   System calls (functions provided by the kernel) 
+       3   Library calls (functions within program libraries)
+       4   Special files (usually found in /dev)
+       5   File formats and conventions, e.g. /etc/passwd : 파일 포멧
+       6   Games
+       7   Miscellaneous (including macro packages and conventions), e.g. man(7), groff(7)
+       8   System administration commands (usually only for root) : 관리자 전용 명령어
+       9   Kernel routines [Non standard]
+
+명령어 체계
+# [1] [2] [3]
+[1] 명령어 : 첫 토큰(쉘에서 입력할때 띄어쓰기를 기준으로 첫번쨰 워드)을 명령어로 인식
+[2] 옵션: 명령어의 형태 변화 / 출력 변화
+[3] 인자: file / dir 명령어 실행에 대한 타겟을 변경
+
+# ls : 파일 / 디렉토리를 확인하는 명령어
+-a 숨김파일을 확인
+-A 숨김파일 확인, . .. 을 제외
+-l 
+-rw-r--r--. 
+- 일반파일
+d 장치파일 블록디바이스 4k
+c 장치파일 캐릭터디바이스 512B
+l 링크파일 [윈도우 바로가기]
+권한 표시
+. : acl 이 없다.
++ : acl 설정이 있다.
+setfacl
+getfacl
+
+stat 
+접근 시간 : 마지막으로 접근한시간
+수정 시간 : 파일의 컨텐츠를 변경한 시간
+변경 시간 : inode 테이블이 변경된 시점
+
+
+-h 
+-v : 수자 + 이름 으로 정령시 순서대로 나타내기
+-r 
+-rt : 시간정보로 정령
+-i : inode 번호확인
+# cd : 작업 디렉토리를 변경
+   cd - : 바로 직전의 디렉토리로 이동
+   OLDPWD - PWD
+   cd /dirpath
+   디렉토리 명은 자동 완성
+   . : 현재 디렉토리
+  .. : 부모 디렉토리
+
+변경
+-P : 링크 위치가 아니라 실제 디렉토리 위치로 이동
+
+# pwd
+# passwd
+비밀번호 교체
+일반 사용자
+1. 기존 비밀번호 체크
+2. 새로운 비밀번호 입력
+3. 새로운 비밀번호 재확인
+비밀번호 정책에 영향 받는다.
+
+관리자:
+1. 새로운 비밀번호 입력
+2. 새로운 비밀번호 재확인
+정책에 영향을 맏지 않음
+시스템에 존재하는 모든 계정의 비밀번호 변경 가능
+
+# useradd
+계정 생성
+-u uid 지정 # useradd team01
+useradd -u 3500 team01
+-g : 그룹 지정
+-G : 서브 그룹
+-g 
+-G 
+
+# rm
+-f :  강제의 의미를 가지고 있음
+-v : 내역을 자세하게 확인
+-r : 디렉토리 삭제시 이용
+
+# cp
+복사
+cp 원본 타겟
+# cp file1 file2
+-r : 디렉토리 복사
+-a : 
+-p : mode, ownership,timestapms 정보를 그대로 가지고 간다. 
+
+# mv
+mv -t dir1 dir2 dir3 dir4 : 1번 디렉토리에서 나머지 디렉토리를 이동
+
+# date
+%m 월
+%d  일
+%H  시
+%M  분
+%s  197001001부터의 초
+%S  초
+%N 나노초
+
+# touch
+1. 빈 파일을 생성
+2. 파일의 시간 변경
+touch file3 : 현재 시간으로 변경
+touch -t 월인시분[년] file3 : 원하는 시간으로 변경 
+
+mk_ : 생성
+ls_ : 확인
+rm_ : 삭제
+ch_ : 변경
+
+최근 명령어는 ? 명령어 세트로 구성
+자동완성이 좀 더 필수
+
+# mkdir
+mkdir -p /dir1/dir2/dir3/dir4 : 타겟은 dir4지만 부모 디렉토리 중에 없는 디렉토리도 생성
+
+# rmdir
+rmdir -p /dir1/dir2/dir3/dir4 : 타렉은 dir4 이만 부모 디렉토리도 순차적으로 삭제
+
+# id
+접속한 계정에 대한 확인
+그룹 확인
+메인 그룹?
+
+# cat
+병합 과 표준출력
+
+파일을 표준 출력으로 내보내고 기존의 존재하는 파일들을 병합하여 새로운 파일로 생성하는 명령어
+-n 출력앞에 라인줄수를 붙인다.
+
+cat file1 file2 > file3 : file1+file3 을 file3으로 저장
+tac : 출력을 반대방향으로 출력 
+
+# ps
+프로세스를 확인하는 명령어
+ps -f
+ps -ef
+ps aux
+
+# bash
+sh -> ksh -> bash -> zsh
+csh -> tcsh
+스크립트 zsh 대응
+
+# su -
+사용자가 하나의 계정만을 사용하기 보다 정책에 맞추어 여러 계정
+
+컨테이너 작업시 su - 사용 금지
+컨테이너 접속시 su - conu
+ssh conu@localhost
+
+su : 상대방 비밀번호를 알아야 한다.
+사용자 ---> 다른 사용자 비밀번호필요.
+사용자 ---> 관리자비밀번호 필요
+관리자 ---> 사용자 비밀번호 필요하지 않다.
+
+sudo
+사용자 계정의 비밀번호를 입력한다.
+sudoers : 권한에 대한 정의가 되어 있지 않으면사요 불가능
+visudo : sudoers 변경
+
+# echo
+1. 텍스트를 입력하여 표준 출력
+
+2. 환경변수 / 지역 변수 출력
+   env / set
+
+# more
+사용되는 기능키는 메뉴얼과 동일
+
+# man
+# clear
+# ln
+하드링크
+ln file1 file2
+소프트링크
+ln -s file1 file2
+왠만하면 소스코드는 절대 경로
+
+한계점
+하드링크
+파일시스템을 넘길수 없다.
+디렉토리에 연결 불가
+
+소프트링크
+디렉토리 가능
+디바이스 넘어서 가능
+원본 파일이 삭제되었을때 볼수 없음.
+
+# tree
+디렉토리 및 파일구조 확인
+
+# dnf
+yum 같은거
+
+# chmod
+# chown
+# umask
+# which
+# where is
+# whereis
+# alias
+# histroy
+# stat
+# file
+# cat file1 file2 > file3
+# cat < file1
+# ssh
+# scp
+# sftp
+# script
+# tree
+# vi
+# uname
+# systemctl
+# exit
+# export
+# ^c
+# ^d
+# export
+# poweroff
+# init 
+# reboot
+# shutdown
+# ping
+# telnet
+# ifconfig
+# head
+# tail
+# who
+# last
+# lastb
+# w
+# while true do ; action ; done
+# df
+# du
+# sort
+# tee
+# wall 
+# grep
+# find
+# find . -name core 2> /dev/null
