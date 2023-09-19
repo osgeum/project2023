@@ -147,3 +147,23 @@ helm chart 파일 만들기
 # helm package mynginx
 mynginx-0.1.0.tgz 생성
 
+
+github chart 저장소 만들기
+- Github를 통해 chart 배포하기
+
+1. git hub registry 생성
+# mkdir goshelm-git
+# cd goshelm-git
+# git init
+# git config --global user.email "osgeum@gmail.com"
+# git config --global user.name "osgeum"
+# cp ../mynginx-0.1.0.tgz .
+# helm repo index .
+# git remote add origin https://github.com/osgeum/goshelm-repo.git
+# git push -u origin master
+# helm repo add goshelm-repo https://osgeum.github.io/goshelm-repo/
+# helm install webserver goshelm-repo/mynginx
+# helm install webserver goshelm-repo/mynginx
+# helm uninstall mynginx
+
+
