@@ -295,3 +295,77 @@ yum 같은거
 # grep
 # find
 # find . -name core 2> /dev/null
+
+9/19
+
+쉘스크립트
+
+자동화
+반복정인 작업을 위한 툴
+top - down 방식
+shell: gui에서 가능한 작업은 모두 cli에서 가능하다.
+
+사람의 실수:
+동일한 작업:
+shell + cron
+
+text file : vi nano
+emacs 텍스트 에티터 사용법
+
+vi : 주로 작업
+vscode : ssh
+vscode server로 webui로 접근 작성
+
+# vi filename
+#!/usr/bin/bash : bash 쉘을 이용해서 쉘 스크립트를 작성하겠다.
+
+CMD : 작업되는 순서대로 넣어주면 된다.
+
+인용 특수 문자
+
+쉘에서는 특수문자 가지는 의미
+
+' : 쉘이 해설을 하지 못하도록 막는다.
+" : 쉘이 해석을 하지 못 하도록 막는다. + 해석이 가능한 특수문자가 존재 
+` : ` ` 안쪽의 문자열을 명령어로 해석  = $( )
+\ : 1. 바로 뒤에 오는 문자를 해석하지 않음
+     2. 문자뒤에 아무것도 오는 상태가이면 쉘을 끝내지 않고 PS2 변수를 반환한 뒤에 쉘을 이어 나간다.
+; : 명령어 격리 위험함
+&& : 앞의 명령어가 $?= 0 경우에만 뒤의 명령어를 실행
+
+1. 권하주기
+실행권한
+chmod u+x file.sh
+2. 어디에서 실행할 것인가?
+# ./file.sh
+
+# cmd > file 2>&1
+
+for
+for VARIABLE in LIST; ( 파일 내용, 시퀀스 ) 
+do
+COMMAND VARIABLE
+done
+
+if 
+조건이 맞을시 : 행동
+
+if 조건; then
+  행동
+fi
+
+
+
+while
+
+while true
+do
+action 명령어 [ 모니터링 ]
+done
+
+
+#find 
+
+
+
+
