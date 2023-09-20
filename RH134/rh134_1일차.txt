@@ -110,7 +110,7 @@ stat
 1. 기존 비밀번호 체크
 2. 새로운 비밀번호 입력
 3. 새로운 비밀번호 재확인
-비밀번호 정책에 영향 받는다.
+비밀번호 정책에 영cto향 받는다.
 
 관리자:
 1. 새로운 비밀번호 입력
@@ -365,6 +365,41 @@ done
 
 
 #find 
+
+
+9-20
+
+tar
+
+-z gzip
+-j bzip2
+-J xz
+
+압축문제
+tar cvzpf : gzip
+    cvjf : bzip2
+    cvJf : xz
+
+rsync
+-a 아카이브모드
+-z 압축
+-a 
+
+sysctl > tuned
+
+정적 튜닝 구성 > 기본
+동적 튜닝 구성 > 구성을 변경
+L 시스템의 변화에 맞추어 알아서 변경
+
+
+fcontext : 디렉토리와 / 내부 파일들의 컨텍스트 조정
+
+boolean - 기능에 대한 on /off
+
+selinux 
+355페이지
+firewall
+실습문제
 
 
 
