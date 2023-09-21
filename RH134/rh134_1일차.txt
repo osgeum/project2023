@@ -401,6 +401,149 @@ selinux
 firewall
 실습문제
 
+9/21
+
+4-1 /etc/fstab 
+4 mount
+mount /dev/vdb1 /disk1
+
+3 filesystem
+# mkfs -t ..
+# mkfs.ext4     ------------ 작은 파일이 많다              
+# mkfs.xfs       ------------ 단일 파일이 크다
+# mkfs.ext4 /dev/vdb1
+# mkfs.xfs -f -K /dev/vdb2
+
+# mount /dev/vdb2 /dir2
+임시 마운트
+
+영구 마운트
+/etc/fstab
+
+2 partition
+#fdisk : 파티션을 지정 / 설정
+fdisk sfdisk gdisk parted
+sfdisk : 동일한용량 / 동일한 파티션 구성을 하는 경우에 쓸만하다.
+1. 원보이 될 파티션 정보
+2. 작업할 디스크
+source : vdb desc: vdc
+# sfdisk -d /dev/vdb | sfdisk /dev/vdc
+fdisk : 메모리에서 작업된 내용을 w 명령을 통해 쓰기 작업 진행
+# fdisk /dev/vdb
+사용법: m
+n: 새로운 파티션 생성
+p: 작성된 파티션 내용을 확인
+d: 파티션 삭제
+t: 파티션 형식을 변환
+
+o : mbr
+g : gpt
+
+parted : 명령을 내리는 즉시작업이 완성 위험
+
+1 block device - disk /dev 장치 b 4k
+#lsblk #lssscsi #lspci
+#lsblk --fs 파일시스템 UUID
+
+가상메모리
+
+swap
+
+메모리 ------ disk
+          4K
+
+메모리 용량이 부족해서
+* 개발자의 요청으로 프로그램에서 가상메모리를 사용하도록 구성된 경우
+
+MEM ------- DISK
+       >>>>> swap in
+       <<<<< swap out
+
+# 500M swap file
+
+disk 파티션 : 권장, 시스템파일이 있는 / 파일시스템과 다른곳에 구성
+FS file : 임시적으로 사용하는 경우에
+
+파티션 준비
+/dev/vdc1
+
+#mkswap /dev/vdc1
+# swapon /dev/vdc1
+# swapoff /dev/vdc1
+# swapon -s 현재 스왑 정보 확인
+# swapon -a
+
+# dd if=/dev/zero of=swapfile bs=1M count=50
+chmod 
+#mkswap /swap/swapfile
+# swapon /swap/swapfile
+# swapoff /swap/swapfile
+# swapon -a
+
+mount
+FS
+[LVM]
+part
+DISK
+
+PV: LVM이 이해가능한 형태의 디스크
+pvcreate /dev/vdc1
+pvs
+pvdisplay
+
+VG: 디스크의 모음
+vgcreate vg0 /dev/vdb1 -s 32M
+vgs
+vgdisplay
+
+LV: vg를 대상으로 파티셔닝 된 논리객체
+lvcreate -n lv0 -l 120 vg0
+
+lvcreate -n lv1 -L 600M
+
+lvs
+
+lvdisplay /dev/vg01/lv1
+
+mkfs.ext4 /dev/vg0/lv0
+mkfs.xfs /dev/vg0/lv1
+
+VG----LV
+PE-----LE : 사이즈가 매핑 4M
+
+df -T
+
+확장
+vgextend /dev/vdc1
+
+ext4
+lvextend -l +25 /dev/vg0/lv0
+resize2fs /dev/vg0/lv0
+
+xfs
+lvextend -L +160M /dev/vg0/lv1
+xfs_growfs /stage2
+
+lvextend -L +10 /dev/vg0/lv1;xfs_growfs /stage2;df -h /stage2
+
+expr 300-201
+
+stratis 
+서비스로 구현
+
+nfs
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
