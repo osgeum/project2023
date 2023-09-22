@@ -21,6 +21,7 @@ workstation
 
 https://meet.google.com/ubt-caxx-ajg
 
+
 https://github.com/studylabdoc//text/tree/main/REDHAT/RH134
 
 rh1234 부터 사용되는 명령어
@@ -532,6 +533,101 @@ stratis
 서비스로 구현
 
 nfs
+
+docker - podman
+
+docker = podman x
+사용자 입장
+
+가상화 - 컨테이너 차이
+
+podman run
+podman build
+podman images
+podman pull
+podman rm
+podman rmi
+
+컨테이너 볼륨
+
+overlay FS
+
+image-> container process
+
+container layer[RW] : 쓰기 데이터가 많아지면 급격하게 느려진다.
+custom layer[RO]
+base layer[RO]
+
+volume
+
+-v
+호스트의 디렉토리와 컨테이너의 디렉토리를 마운트 
+호스트의 디렉토리: 컨테이너의 디렉토리
+
+SELINUX 가 구동중
+-v 호스트의 디렉토리: 컨테이터 디렉토리:z
+
+시험
+serverb 
+1. root 비밀번호 초기화
+
+servera
+2. 네트워크 설정
+3. nmtui 호스트네임 설정
+servera 에 대한 ssh로 접근
+4. 리포지토리 설정
+
+serverb 
+serverb에 대한 ssh 접근
+5. 리포지토리 설정
+-----------------------------------------------------------------------------------------------------------------------
+
+컨테이너
+이미지 빌드
+컨테이너 생성
+
+servera에 cont 사용자로 구성
+
+http://server1.example.com/Container를 사용하여 watch 라고지정된 컨테이너를 빌드 합니다.
+
+# dnf -y install container-tools
+# podman info
+# ssh cont@localhost
+$ podman info
+$ mkdir work
+$ cd work
+$ wget http://server1.example.com/Container
+$ podman build -t wach:latest .
+
+컨테이너 이름은 aaa
+컨테이너는 이전에 다른 항목에서 생성된 watch를 이미지로 사용합니다.
+기존 사용자 cont로마 systemd 서비스로 실행 됩니다.
+서비스 이름은 container-aaa 입니다.
+컨테이너는 수동 조작 없이 시스템 재부팅후 자동으로 시작됩니다.
+/opt/files 로컬 디렉토리를 컨테이너의 /otp/incoming 디렉토리에 연결
+/opt/processed 로컬 디렉토리를 컨테이너의 /otp/outgoing 디렉토리에 연결
+
+$ podman images
+  watch 라는 이미지가 보여야 한다.
+$ podman run --name aaa -d localhost/watch -v /otp/files:/otp/incoming:Z -v /otp/processed:/otp/outgoing:Z
+$ podman ps
+$ mkdir -p ~/.config/systemd/user
+$ podman generate systemd --name aaa -new --files
+~/cont/work/container-aaa.service
+vm ~/cont/work/container-aaa.service ~/.config/systemd/user
+$ systemctl --user daemon -reload
+$ systemctl --user enable --now container-aaa.service
+$ loginctlenable-linger
+
+
+
+
+
+
+
+
+
+
 
 
 
